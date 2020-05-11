@@ -1,0 +1,13 @@
+spring:
+   profiles:
+      active: dev-7777
+      
+---
+spring:
+   profiles: dev-7777
+   application:
+      name: fresh-user
+   cloud:
+      config:
+         uri:
+   

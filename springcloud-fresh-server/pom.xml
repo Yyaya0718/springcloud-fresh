@@ -27,7 +27,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.yjj.springcloud.fresh.FreshUserApplication</mainClass>
+					<mainClass>com.yjj.fresh.user.FreshUserApplication</mainClass>
 				</configuration>
 				<executions>
 					<execution>

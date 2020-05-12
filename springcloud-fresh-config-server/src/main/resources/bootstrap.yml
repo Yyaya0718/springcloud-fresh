@@ -1,13 +1,28 @@
+server:
+   port: 5566
+   
 spring:
    application:
       name: fresh-config-server
+   profiles:
+      active: native #说明是本地配置中心，即从本地获取配置文件
       
    cloud:
       config:
          server:
-            git:
-               uri: https://github.com/Yyaya0718/springcloud-fresh.git   #配置文件所在的仓库
-               username: Yyaya0718   #账号
-               password: 0828..yjj   #密码
-               default-label: master     #分支
-               search-paths: springcloud-config/src/main/resources   #配置文件所在的路径
+            native:
+               search-locations: classpath:/config  #从当前项目的类路径下的config目录下找配置文件
+               
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://yjj:a@127.0.0.1:6868/eureka
+#   cloud:
+#      config:
+#         server:
+#            git:
+#               uri: https://github.com/Yyaya0718/springcloud-fresh.git   #配置文件所在的仓库
+#               username: Yyaya0718   #账号
+#               password: 0828..yjj   #密码
+#               default-label: master     #分支
+#               search-paths: springcloud-config/src/main/resources   #配置文件所在的路径

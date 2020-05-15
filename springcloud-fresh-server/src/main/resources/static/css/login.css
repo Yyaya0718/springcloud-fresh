@@ -102,7 +102,6 @@
 	width:230px;
 	position:relative;/*相对定位*/
 	left:0;
-	top:-12px;
 }
 .code{
 	width:70px;	
@@ -140,7 +139,6 @@
 .user_error,.pwd_error,.code_error{
 	font-size:14px;
 	color:red;
-	visibility: hidden;/*隐藏 并占据空间*/
 }
 .user_error,.pwd_error{
 	margin-top:5px;

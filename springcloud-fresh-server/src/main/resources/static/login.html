@@ -6,6 +6,10 @@
 <link rel="icon" href="images/copylogo.png">
 <link rel="stylesheet" href="css/reset.css">
 <link rel="stylesheet" href="css/login.css">
+<style type="text/css">
+	   #code{border: none;color: #007DDB;font-style: italic;letter-spacing: 2px;font-weight:bold;width: 60px;height:30px;text-align: center;}
+       #code:focus{outline: none;} 
+</style>
 </head>
 
 <body>
@@ -13,7 +17,7 @@
 	<div class="login_top">
     	<a href="index.html" class="login_logo"><img src="images/logo02.png"></a>
     </div>
-	
+<div id="app">
 	<!-- 内容区域 -->
     <div class="login_form_bg">
     	<div class="login_form_wrap clearfix">
@@ -29,23 +33,21 @@
                     <form>
 						<ul>
                             <li>
-                                <input type="text" name="nickname" class="name_input" id="nickname" placeholder="请输入用户名" id="nickname">
-                                <div class="user_error">输入错误</div>
+                                <input type="text" name="nickname" class="name_input" v-model="uname" @blur="checkName()" placeholder="请输入用户名" >
+                                <div class="user_error" v-show="status[0]">{{info1}}</div>
                             </li>
                             <li>
-                                <input type="password" name="pwd" class="pwd_input" id="pwd" placeholder="请输入密码" id="pwd">
-                                <div class="pwd_error">密码错误</div>
+                                <input type="password" name="pwd" class="pwd_input" v-model="pwd" @blur="checkPwd()" placeholder="请输入密码" id="pwd">
+                                <div class="pwd_error" v-show="status[1]">{{info2}}</div>
                             </li>
                             <li>
                             	<div>
                                 <input type="text" name="yzm" id="yzm" class="yzm_input"
                                 placeholder="请输入验证码">
-                                <img class="code" src="images/yzm.png">
+                                <input type="button" id="code" @click="getCode()" v-model="code"/>
                                 </div>
-                                    <!--<img id="code" src="http://localhost:8080/Fresh/VerifyCodeServlet">
-                                    <img id="image" src="code/getCode" title="验证码图" onclick="refresh(this)"/>
-                                    -->
-                                <div class="code_error">验证码错误</div>
+                                   
+                                <div class="code_error" v-show="status[2]">验证码错误</div>
                             </li>
                             <li>
                                 <div class="more_input clearfix">
@@ -55,7 +57,7 @@
                                 </div>
                             </li>
                             <li>
-                               <input type="button" value="登录" class="submit_input" onclick = "login()">
+                               <input type="button" value="登录" class="submit_input" @click = "login()">
                             </li>
                       	</ul>
                     </form>
@@ -63,7 +65,7 @@
             </div>
          </div>
     </div>
-	
+</div>	
 	<!-- 版权所有-->
     <div class="footer">
     	<div class="foot_link">
@@ -75,29 +77,101 @@
         <p>CopyRight &copy;  2019 衡阳市源辰信息科技有限公司 All Rights Reserverd</p>
         <p>电话：0734-8355998 湘ICP备16015987号</p>
     </div>
-	<script src="js/jquery-3.4.1.min.js"></script>
-	<script>
-		//切换验证码
-		function refresh(obj){
-			obj.src="code/getCode?"+Math.random();
-		}
-		
-		//模拟登陆
-		function login(	){
-			//获取用户名
-			var nickname = $("#nickname").val();
-			//获取密码
-			var pwd = $("#pwd").val();
-			//获取验证码
-			var yzm = $("#yzm").val();
-			//登陆	
-			if( nickname == 'yc' && pwd == 'a' && yzm == '9amn' ){
-				//跳转转网页
-				window.location.href = "index.html?nickname="+nickname;	
-			}else{
-				window.location.href = "login.html";
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/qs.js"></script>
+<script>
+	let vm=new Vue({
+		el:"#app",
+		data:{
+			uname:"",
+			pwd:"",
+			status:[false,false,false],
+			info1:"",
+			info2:"",
+			code:"获取验证码",
+		},
+		methods:{
+			checkName:function(){
+				let correct=false;
+				var reg = /^\w{6,15}(\@[a-z0-9]+(\.[0-9a-z]+){1,2})?$/;
+				
+		        if (this.uname == '') {
+		        	this.info1="用户名不能为空";
+		        	correct=true;
+		        }else if(! reg.test(this.uname)) {
+		        	this.info1="用户名必须是6到十五位 或者是 邮箱";
+		        	correct=true;
+		        }else{
+		        	correct=false;
+		        }
+		        
+		        Vue.set(vm.status,0,correct);
+		        
+			},
+			checkPwd:function(){
+				 var reg = /^[\w@!#$%&^*]{6,15}$/;
+
+			     if (this.pwd == '') {
+			        this.info2="密码不能为空";
+			        correct=true;
+			    }else if (! reg.test(this.pwd)) {
+			        this.info2="密码是6到15位字母、数字";
+			        correct=true;
+			    }else{
+			    	this.info2="";
+			        correct=false;
+			    }	
+			    console.log(correct);
+			    Vue.set(vm.status,1,correct);
+			     
+			},
+			getCode:function(){
+				var code='';  /*默认code为空*/
+			    var codes=[0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];  /*声明一个数组,用来放所有数字字母*/
+			    for(var i=0;i<4;i++){  /*获取长度为4的验证码*/
+			    	var j=Math.floor(Math.random()*62);/*从codes数组下标随机获取数字0-61,存入arr*/
+			        code+=codes[j];
+			   }
+			  this.code=code; /*把得到的验证码赋值给显示按钮*/
+			},
+			login:function(){
+				
+				if($.inArray(true,this.status)>0){
+					alert("账号或密码为空");
+					return;
+				}
+				
+				axios({
+					url:"member/login",
+					method:"post",
+					params:{
+						nickName:this.uname,
+						pwd:this.pwd
+					}
+				}).then(yc=>{
+					if(yc.data==2){
+						let temp=document.referrer;//获取来源路径
+						if(temp=="" || temp==undefined || temp.indexOf("regidter.html")){
+							location.href="/view/index.html";
+						}else{
+							history.go(-1);
+						}
+					}else if(yc.data==-3){
+						alert("您的账号被封禁，请尽快联系管理员");
+					}else{
+						alert("账号或密码错误....");
+						location.reload();
+					}
+				})
+				
 			}
-		}
-	</script>
+		},
+		mounted:function(){
+			
+		}	
+	})	
+</script>
 </body>
 </html>

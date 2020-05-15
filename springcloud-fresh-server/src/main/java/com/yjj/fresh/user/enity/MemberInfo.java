@@ -1,6 +1,8 @@
 package com.yjj.fresh.user.enity;
 
-public class MemberInfo {
+import java.io.Serializable;
+
+public class MemberInfo implements Serializable{
 	private Integer mno;
 	private String nickName;
 	private String pwd;

@@ -1,0 +1,47 @@
+spring:
+   datasource:   #数据库连接配置
+      type: com.alibaba.druid.pool.DruidDataSource
+      diverClassName: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/project?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+      username: root
+      password: a
+      
+   http:
+      encoding:
+         force: true   #http强制编码集过滤
+         charset: utf-8
+         enable: true
+         
+   session:
+      store-type: redis
+      
+   redis:
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+      password:
+      timeout: 5000
+      jedis:
+         pool:
+            max-active: 8
+   
+   mail: 
+      host: smtp.163.com
+      username: yinjingjing0718@163.com
+      password: HMMDLHQYSJFFMCPF
+      protocol: smtp
+      properties:
+         mail: 
+            smtp:
+               auth: true
+               ssl:
+                  enable: true
+         
+mybatis:   #mybatis配置
+   mapper-locations: mapper/*Mapper.xml
+   type-aliases-package: com.yjj.fresh.order.enity
+   
+eureka:
+   client:
+      service-url:
+         defaultZone: http://yjj:a@127.0.0.1:6868/eureka

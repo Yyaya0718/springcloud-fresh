@@ -1,0 +1,49 @@
+spring:
+   profiles: dev-8888
+   
+---
+server:
+   port: 8888
+   
+spring:
+   profiles: dev-8888
+   application:
+      name: fresh-goods
+   cloud:
+      config:
+         uri: http://127.0.0.1:5566/
+         label: master
+         name: springcloud-fresh-goods
+         profile: dev
+         
+management:
+   endpoint:
+      shutdown:
+         enabled: false
+   endpoints:
+      refresh:
+         enabled: true
+         
+---
+server:
+   port: 8889
+   
+spring:
+   profiles: dev-8889
+   application:
+      name: fresh-goods
+   cloud:
+      config:
+         uri: http://127.0.0.1:5566/
+         label: master
+         name: springcloud-fresh-goods
+         profile: dev
+         
+management:
+   endpoint:
+      shutdown:
+         enabled: false
+   endpoints:
+      refresh:
+         enabled: true
+   

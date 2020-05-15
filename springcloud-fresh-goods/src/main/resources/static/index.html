@@ -12,14 +12,15 @@
 <body>
 <div id="header">
 	<!-- 头部  -->
+<div id="login">
 	<div class="header_con">
     	<div class="header">
     		<div class="welcome fl">欢迎来到天天生鲜</div>
     		<div class="fr">
-            	<div class="login_info fl">
-                	欢迎：<em>y c</em>
+            	<div class="login_info fl" v-if=" nickName!='' ">
+                	欢迎：<em>{{ nickName }}</em>
                 </div>
-                <div class="login_btn fl">
+                <div class="login_btn fl" v-else>
                 	<a href="login.html">登录</a>
                     <span> | </span>
                     <a href="register.html">注册</a>
@@ -35,7 +36,7 @@
              </div>  
     	</div>
     </div>
-    
+</div> 
      <!-- 搜素框 -->
      <div class="search_bar clearfix">
      		<a href="index.html" class="logo fl"><img src="images/logo.png"></a>
@@ -136,6 +137,7 @@
     <!--  注意引入顺序 -->
 	<script src="js/axios.js"></script>
     <script src="js/vue.js"></script>
+    <script src="js/check.js"></script>
     <script>
 		var let=new Vue({
 			el:"#goods_list",

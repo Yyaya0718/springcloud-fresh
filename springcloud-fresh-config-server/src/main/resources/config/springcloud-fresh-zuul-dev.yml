@@ -20,12 +20,16 @@ zuul:
       service-rpc-user:
          path: /user/**
          serviceId: fresh-user
+         #zuul在路由的时候，zuul会改写成request中的header信息，这个配置就是对那些header敏感，回过来这些header信息
+         sensitiveHeaders: "*"
          
       service-rpc-goods:
          path: /goods/**
          serviceId: fresh-goods
+         sensitiveHeaders: "*"
          
       service-rpc-order:
          path: /order/**
          serviceId: fresh-order
+         sensitiveHeaders: "*"
       

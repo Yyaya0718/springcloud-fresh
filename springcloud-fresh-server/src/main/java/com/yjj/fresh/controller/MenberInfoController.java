@@ -38,7 +38,7 @@ public class MenberInfoController {
 
 		if(member!=null){
 			if(member.getStatus()==1){
-				session.setAttribute("loginUser", member);
+				session.setAttribute("LoginUser", member);
 				result=2;
 			}else{
 				result=-3;

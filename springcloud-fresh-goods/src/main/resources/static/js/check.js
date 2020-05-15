@@ -4,9 +4,11 @@ let check_info=new Vue({
 		nickName:""
 	},
 	mounted:function(){
-		axios.get("../member/checkinfo",{param:{}}).then(yc=>{
+		axios.get("member/checkinfo",{param:{}}).then(yc=>{
 			if(yc.data!=null){
 				this.nickName=yc.data.nickName;
+			}else{
+				this.nickName='';
 			}
 		})
 	}

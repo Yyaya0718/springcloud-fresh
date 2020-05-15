@@ -9,7 +9,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @SpringBootApplication
 @EnableEurekaClient
 @EnableRedisHttpSession	//将session缓存到redis
-@MapperScan("com.yjj.fresh.goods.mapper")
+@MapperScan("com.yjj.fresh.mapper")
 public class GoodsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GoodsApplication.class, args);

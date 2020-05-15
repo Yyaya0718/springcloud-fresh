@@ -20,7 +20,7 @@
             	<div class="login_info fl" v-if=" nickName!='' ">
                 	欢迎：<em>{{ nickName }}</em>
                 </div>
-                <div class="login_btn fl" v-else>
+                <div class="login_btn fl" v-if=" nickName=='' ">
                 	<a href="login.html">登录</a>
                     <span> | </span>
                     <a href="register.html">注册</a>

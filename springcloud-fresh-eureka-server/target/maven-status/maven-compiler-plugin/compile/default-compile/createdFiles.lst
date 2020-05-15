@@ -1,2 +1,2 @@
-com\yjj\springcloud\fresh\eureka\config\WebSecurityConfig.class
-com\yjj\springcloud\fresh\eureka\EurekaServerApplication.class
+com\yc\fresh\eureka\server\config\WebSecurityConfig.class
+com\yc\fresh\eureka\server\EurekaServerApplication.class

@@ -1,0 +1,10 @@
+com\yjj\fresh\goods\enity\GoodsInfo.class
+com\yjj\fresh\goods\GoodsApplication.class
+com\yjj\fresh\goods\mapper\IGoodsInfoMapper.class
+com\yjj\fresh\goods\mapper\ITypesInfoMapper.class
+com\yjj\fresh\goods\biz\impl\GoodsInfoBizImpl.class
+com\yjj\fresh\goods\enity\TypeInfo.class
+com\yjj\fresh\goods\biz\IGoodsInfoBiz.class
+com\yjj\fresh\goods\util\ResponseUtil.class
+com\yjj\fresh\goods\util\StringUtil.class
+com\yjj\fresh\goods\controller\GoodsInfoController.class

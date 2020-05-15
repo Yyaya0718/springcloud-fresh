@@ -1,12 +1,7 @@
-spring:
-   profiles: dev-8888
-   
----
 server:
    port: 8888
    
 spring:
-   profiles: dev-8888
    application:
       name: fresh-goods
    cloud:
@@ -15,6 +10,9 @@ spring:
          label: master
          name: springcloud-fresh-goods
          profile: dev
+         descovery:
+            enabled: true #开启配置发现
+            serviceId: fresh-config-server #配置中心服务器的名字 前提是必须加到了eureka服务器中
          
 management:
    endpoint:
@@ -24,26 +22,5 @@ management:
       refresh:
          enabled: true
          
----
-server:
-   port: 8889
-   
-spring:
-   profiles: dev-8889
-   application:
-      name: fresh-goods
-   cloud:
-      config:
-         uri: http://127.0.0.1:5566/
-         label: master
-         name: springcloud-fresh-goods
-         profile: dev
-         
-management:
-   endpoint:
-      shutdown:
-         enabled: false
-   endpoints:
-      refresh:
-         enabled: true
+
    

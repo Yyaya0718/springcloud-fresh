@@ -1,0 +1,20 @@
+spring:
+   cloud:
+      config:
+         uri: http://127.0.0.1:5566/
+         label: master
+         name: springcloud-fresh-zuul
+         profile: dev
+         descovery:
+            enabled: true #开启配置发现
+            serviceId: fresh-config-server #配置中心服务器的名字 前提是必须加到了eureka服务器中
+            
+#actuator监控，感应配制中心服务端的变化
+management:
+   endpoint:
+      shutdown:
+         enabled: false
+         
+   endpoints:
+      refresh:
+         enabled: true

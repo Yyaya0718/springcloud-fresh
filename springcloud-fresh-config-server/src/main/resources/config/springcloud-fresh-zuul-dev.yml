@@ -1,0 +1,31 @@
+server:
+   port: 9999
+spring:
+   application:
+      name: fresh-zuul
+      
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://yjj:a@127.0.0.1:6868/eureka
+         
+zuul:
+   max:
+      host:
+         connections: 500
+   host:
+      maxTotalConnections: 200   #最大连接数
+      maxPerRouteConnections: 20   #每个路由器的最大连接个数
+   routes:
+      service-rpc-user:
+         path: /user/**
+         serviceId: fresh-user
+         
+      service-rpc-goods:
+         path: /goods/**
+         serviceId: fresh-goods
+         
+      service-rpc-order:
+         path: /order/**
+         serviceId: fresh-order
+      

@@ -20,7 +20,7 @@
         	 <div class="reg_slogan fr">足不出户 · 新鲜每一天</div>
        		 <div class="reg_banner fr"></div>
         </div>
-
+	<div id="vm">
 		<div class="r_con fr">
         	<div class="reg_title clearfix">
             	<h1 class="fl">用户注册</h1>
@@ -31,38 +31,34 @@
                     <ul>
                         <li>
                             <label for="nickname">用户名:</label>
-                            <input type="text" id="nickname" name="nickname" placeholder="请输入您的用户名" required >
-                            <span class="error_tip">提示信息</span>
+                            <input type="text" v-model="nickname" id="nickname" @blur="checkName()" placeholder="请输入您的用户名" required >
+                            <span class="error_tip" v-if="status[0]">{{ tip_name }}</span>
                         </li>
                         <li>
                             <label for="pwd">密码:</label>
-                            <input type="password" id="pwd" name="pwd" placeholder="请输入6~15位字母、数字还可包含特殊字符">
-                            <span class="error_tip">提示信息</span>
+                            <input type="password" v-model="pwd" id="pwd" @blur="checkPwd()" placeholder="请输入6~15位字母、数字还可包含特殊字符">
+                            <span class="error_tip" v-if="status[1]">{{ tip_pwd }}</span>
                         </li>
                         <li>
                             <label for="cpwd">确认密码:</label>
-                            <input type="password" id="cpwd" name="cpwd" placeholder="请输入确认密码">
-                            <span class="error_tip">提示信息</span>
+                            <input type="password" v-model="cpwd" id="cpwd" @blur="checkCpwd()" placeholder="请输入确认密码">
+                            <span class="error_tip" v-if="status[2]">{{ tip_cpwd }}</span>
                         </li>
                          <li>
-                            <label for="tel">电话号码:</label>
-                            <input type="text" id="tel" name="tel" placeholder="请输入以1开头的11位有效电话号码">
-                            <input type="button" id="getCode" name=""  value="获取验证码">
-                            <span class="error_tip yzm_tip" >提示信息</span>
+                            <label for="email">邮箱:</label>
+                            <input type="text" v-model="email" id="tel" @blur="checkEmail()" placeholder="请输入有效的邮箱地址">
+                            <input type="button" id="getCode" name="" @click="getCode()" value="获取验证码">
+                            <span class="error_tip yzm_tip" v-if="status[3]">{{ tip_email }}</span>
                         </li>
                         <li>
                             <label for="yzm">验证码:</label>
-                            <input type="text" id="yzm" name="yzm" placeholder="请输入验证码">
-                            <span class="error_tip">提示信息</span>
+                            <input type="text" v-model="yzm" id="yzm" @blur="checkYzm()" placeholder="请输入验证码">
+                            <span class="error_tip" v-if="status[4]">{{ tip_yzm }}</span>
                         </li>
                         <li>
-                            <label for="email">邮箱:</label>
-                            <input type="text" id="email" name="email" placeholder="请输入有效的邮箱地址">
-                            <span class="error_tip">提示信息</span>
-                        </li>
-                        <li  class="row">
-                        	<!-- 滑块验证-->
-                            <div class="bar"></div>
+                        	<label for="tel">电话号码:</label>
+                            <input type="text" v-model="tel" id="email" @blur="checkTel()" placeholder="请输入以1开头的11位有效电话号码">
+                            <span class="error_tip" v-if="status[5]">{{ tip_tel }}</span>
                         </li>
                         <li class="agreement">
                             <input type="checkbox" id="allow" name="allow" checked>
@@ -70,15 +66,15 @@
                             <span class="error_tip2">提示信息2</span>
                         </li>
                          <li>
-                            <input type="button" id="reg" name="" onClick="checkRegister()" value="注 册">
-                            <span id="errmsg">提示信息3</span>
+                            <input type="button" id="reg" name="" @click="register()" value="注 册">
+                            <span id="errmsg" v-if="status[6]">{{ tip_reg }}</span>
                         </li>
                     </ul>
                 </form>
         	</div>
         </div>
 	</div>
-    
+  </div>  
     <!-- 版权所有 -->
     <div class="footer">
     	<div class="foot_link">
@@ -90,10 +86,189 @@
     	<p>CopyRight &copy; 2019 衡阳市源辰信息科技有限公司 All Rights Reserverd</p>
         <p>电话：0734-8355998 湘ICP备16015987号</p>
     </div>
-    <script src="js/register.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/qs.js"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <script>
-    	$('.bar').slideToUnlock({
-		});
+    	var app=new Vue({
+    		el:"#vm",
+    		data:{
+    			nickname:"",
+    			tip_name:"",
+    			pwd:"",
+    			tip_pwd:"",
+    			cpwd:"",
+    			tip_cpwd:"",
+    			email:"",
+    			tip_email:"",
+    			yzm:"",
+    			tip_yzm:"",
+    			tel:"",
+    			tip_tel:"",
+    			tip_reg:"",
+    			status:[false,false,false,false,false,false,false]
+    		},
+    		methods:{
+    			checkName:function(){
+    				//正则表达式
+    				//创建一个规则
+    				var reg = /^\w{6,15}$/;
+    				var correct=false;
+    				//判断用户名的格式
+    				if(this.nickname == '' ){
+    					this.tip_name="用户名不能为空";
+    					correct=true;
+    				}else if( !reg.test(this.nickname)){
+    					this.tip_name="用户名必须是6-15位的英文或数字";
+    					correct=true;
+    				}else{
+    					this.tip_name="";
+    					correct=false;
+    				}
+    				
+    				Vue.set( app.status, 0 , correct );
+    				
+    			},
+    			checkPwd:function(){
+    				//规则
+    				var reg = /^[\w@!#$%^&*~]{6,15}$/;
+    				var flag=false;
+    				//判断
+    				if(this.pwd==''){
+    					this.tip_pwd="密码不能为空";
+    					flag=true;
+    				}else if(!reg.test(this.pwd)){
+    					this.tip_pwd="密码不符合规范";
+    					flag=true;
+    				}else{
+    					this.tip_pwd="";
+    					flag=false;
+    				}
+    				
+    				Vue.set( app.status, 1 , flag );
+    				
+    			},
+    			checkCpwd:function(){
+    				var flag=false;
+    				
+    				//判断
+    				if(this.cpwd == ''){
+    					this.tip_cpwd="确认密码不能为空";
+    					flag=true;
+    				}else if(this.cpwd != this.pwd){
+    					this.tip_cpwd="两次输入的密码不一致";
+    					flag=true;
+    				}else{
+    					this.tip_pwd=" ";
+    					flag=false;
+    				}
+    				
+    				Vue.set( app.status, 2 , flag );
+    			},
+    			checkEmail:function(){
+    				var flag=false;
+    				var reg=/^[1-9]\d{4,10}@qq\.com$/i;
+    				
+    				if(this.email==''){
+    					this.tip_email="邮箱不能为空";
+    					flag=true;
+    				}else if(!reg.test(this.email)){
+    					this.tip_email="邮箱格式错误";
+    					flag=true;
+    				}else{
+    					this.tip_email="";
+    					flag=false;
+    				}
+    				
+    				Vue.set( app.status, 3 , flag );
+    				
+    			},
+    			checkYzm:function(){
+    				
+    				var reg=/^[0-9]{6}$/;
+    				var flag=false;
+    				
+    				if(this.yzm==''){
+    					this.tip_yzm="验证码不能为空";
+    					flag=true;
+    				}else if(!reg.test(this.yzm)){
+    					this.tip_yzm="验证码只能是6位0-9的数字";
+    					flag=true;
+    				}else{
+    					this.tip_yzm="";
+    					flag=false;
+    				}
+    				
+    				Vue.set( app.status, 4 , flag );
+    				
+    			},
+    			checkTel:function(){
+    				var reg = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+    				var flag=false;
+					if(this.tel==''){
+    					this.tip_tel="电话号码不能为空";
+    					flag=true;
+    				}else if( !reg.test(this.tel)){
+    					this.tip_tel="手机号码格式错误";
+    					flag=true;
+    				}else{
+    					this.tip_tel="";
+    					flag=false;
+    				}
+					
+					Vue.set( app.status, 5 , flag );
+					
+    			},
+    			getCode:function(){
+    				$("#getCode").attr("disabled","true");
+    				if(this.status[3] || this.status[0] ){
+    					$("#getCode").removeAttr("disabled");
+    					return;
+    				}
+    				
+    				axios.post("member/email",qs.stringify({uname:this.nickname,email:this.email})).then(yc=>{
+    					if(yc.data.code==200){
+    						this.tip_reg="验证码发送成功";
+        					Vue.set( app.status, 6 , false );
+    					}else{
+    						$("#getCode").removeAttr("disabled");
+    						this.tip_reg="验证码发送失败";
+        					Vue.set( app.status, 6 , true );
+    					}
+    				})
+    			},
+    			register:function(){
+    				console.log(this.status);
+    				if($.inArray(true,this.status)>=0){
+    					this.tip_reg="您输入的信息有误";
+    					Vue.set( app.status, 6 , true );
+    					return;
+    				}
+    				
+    				axios.post("member/reg",qs.stringify({nickName:this.nickname,pwd:this.pwd,email:this.email,code:this.yzm,tel:this.tel})).then(yc=>{
+    					var flag=false;
+    					if(yc.data==-2){
+    						this.tip_reg="验证码过期";
+    						flag=true;
+    					}else if(yc.data==-3){
+    						this.tip_reg="验证码错误";
+    						flag=true;
+    					}else if(yc.data>0){
+    						location.href="/user/login.html?name="+this.nickname;
+    						var flag=false;
+    					}else{
+    						this.tip_reg="注册失败";
+    						flag=true;
+    					}
+    					
+    					Vue.set( app.status, 6 , flag );
+    					
+    				})
+    				
+    			}
+    		},
+    	})
     </script>
 </body>
 </html>

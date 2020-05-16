@@ -1,4 +1,4 @@
-package com.yjj.fresh.service;
+package com.yjj.fresh.biz;
 
 import java.util.Map;
 
@@ -16,4 +16,11 @@ public interface IMemberInfoBiz {
 	 * 注册
 	 */
 	public int reg(MemberInfo member);
+	
+	/**
+	 * 根据会员号查询购物车商品数量
+	 * @param mno
+	 * @return
+	 */
+	public int findCartNum(int mno);
 }

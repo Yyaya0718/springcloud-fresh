@@ -13,4 +13,8 @@
 		insert into memberinfo values(0,#{nickName},'',#{pwd},#{tel},#{email},#{photo},#{regDate},1)
 	</insert>
 	
+	<select id="findCartNum" parameterType="int" resultType="int">
+		select count(cno) as num from cartinfo where mno=#{_parameter}
+	</select>
+	
 </mapper>

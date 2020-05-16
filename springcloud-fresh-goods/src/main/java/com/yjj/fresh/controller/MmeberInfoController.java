@@ -1,5 +1,8 @@
 package com.yjj.fresh.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +16,14 @@ import com.yjj.fresh.enity.MemberInfo;
 public class MmeberInfoController {
 
 	@GetMapping("/checkinfo")
-	public MemberInfo checkInfo(HttpSession session) {
+	public Map<String,Object> checkInfo(HttpSession session) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		
 		MemberInfo member=(MemberInfo) session.getAttribute("LoginUser");
 		
-		if(member==null) {
-			return null;
-		}
+		map.put("nickName",member.getNickName());
+		map.put("cartNum",Integer.parseInt(session.getAttribute("cartNum").toString()));
 		
-		return member;
+		return map;
 	}
 }

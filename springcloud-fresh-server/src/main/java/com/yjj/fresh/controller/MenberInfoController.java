@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yjj.fresh.biz.IMemberInfoBiz;
 import com.yjj.fresh.enity.MemberInfo;
-import com.yjj.fresh.service.IMemberInfoBiz;
 import com.yjj.fresh.util.ResponseUtil;
 import com.yjj.fresh.util.SendMailUtil;
 @RestController
@@ -35,10 +35,11 @@ public class MenberInfoController {
 	public int Login(@RequestParam Map<String,Object> map,HttpSession session,HttpServletResponse response) throws UnsupportedEncodingException, NoSuchAlgorithmException{
 		int result=-1;
 		MemberInfo member=memberInfoBiz.login(map);
-
+	
 		if(member!=null){
 			if(member.getStatus()==1){
 				session.setAttribute("LoginUser", member);
+				session.setAttribute("cartNum", memberInfoBiz.findCartNum(member.getMno()));
 				result=2;
 			}else{
 				result=-3;
@@ -52,7 +53,7 @@ public class MenberInfoController {
 	@ResponseBody
 	public int reg(HttpSession session ,MemberInfo member){
 		//取出验证码，判断验证码是否正确
-		String code=session.getAttribute("GetCode").toString();
+		String code=session.getAttribute("emailCode").toString();
 		if("".equals(code) || code==""){
 			return -2;//验证码过期
 		}
@@ -91,4 +92,5 @@ public class MenberInfoController {
 		}
 		return ResponseUtil.responseMap(500, null, null);
 	}
+	
 }

@@ -17,11 +17,11 @@
     	<div class="header">
     		<div class="welcome fl">欢迎来到天天生鲜</div>
     		<div class="fr">
-            	<div class="login_info fl" v-if=" nickName!='' ">
-                	欢迎：<em>{{ nickName }}</em>
+            	<div class="login_info fl">
+                	<span v-if="nickName !='' ">欢迎：<em>{{ nickName }}</em></span>
                 </div>
-                <div class="login_btn fl" v-if=" nickName=='' ">
-                	<a href="login.html">登录</a>
+                <div class="login_btn fl" >
+                	<a href="login.html" v-if=" nickName=='' ">登录</a>
                     <span> | </span>
                     <a href="register.html">注册</a>
                 </div>
@@ -36,7 +36,7 @@
              </div>  
     	</div>
     </div>
-</div> 
+
      <!-- 搜素框 -->
      <div class="search_bar clearfix">
      		<a href="index.html" class="logo fl"><img src="images/logo.png"></a>
@@ -48,10 +48,10 @@
             </div>
      		<div class="guest_cart fr">
             	<a href="cart.html" class="cart_name fl">我的购物车</a>
-                <div class="goods_count fl" id="show_count">1</div>
+                <div class="goods_count fl" id="show_count">{{ cartNum }}</div>
             </div>
      </div>
-
+</div> 
     <!-- 商品分类 -->
     <div class="navbar_con">
     	<div class="navbar">
@@ -105,7 +105,7 @@
             	<span>|</span>
                 <a :href=`details.html#${good.gno}` v-for="good in goods" v-if="type.tno == good.tno">{{ good.gname }}</a>
             </div>
-            <a :href=`goods.html?tno=${type.tno}&page=1` class="goods_more fr" id="fruit_more">查看更多</a>
+            <a :href=`goods.html#${type.tno}&1` class="goods_more fr" id="fruit_more">查看更多</a>
         </div>
     
     	<div class="goods_con clearfix">

@@ -16,6 +16,8 @@ zuul:
    host:
       maxTotalConnections: 200   #最大连接数
       maxPerRouteConnections: 20   #每个路由器的最大连接个数
+      socket-timeout-millis: 60000
+      connect-timeout-millis: 60000
    routes:
       service-rpc-user:
          path: /user/**
@@ -32,4 +34,8 @@ zuul:
          path: /order/**
          serviceId: fresh-order
          sensitiveHeaders: "*"
+         
+ribbon:
+   ReadTimeout: 10000   #小于zuul的超时时间
+   ConnectTimeout: 10000
       

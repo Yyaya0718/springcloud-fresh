@@ -11,5 +11,19 @@
 		 (select count(gno) from goodsinfo gf2 where gf1.tno=gf2.tno and gf1.gno &lt; gf2.gno)
 		 order by gf1.tno asc,gf1.gno desc
 	</select>
-
+	
+	<!-- goods.html页面分页查询 -->
+	<select id="findByPage" parameterType="map" resultType="GoodsInfo">
+		select gno,gname,price,intro,balance,pics,descr,unit,weight,t.tno,tname from goodsinfo g,typeinfo t 
+		where g.tno=t.tno and t.tno=#{tno} order by balance DESC,g.gno DESC limit #{page},#{rows} 
+	</select>
+	
+	<select id="findByTno" parameterType="string" resultType="int">
+		select count(gno) as num from goodsinfo where tno=#{_parameter}
+	</select>
+	
+	<select id="fingByGno" parameterType="string" resultType="GoodsInfo">
+		select gno,gname,price,intro,balance,pics,descr,unit,weight,qperied,t.tno,tname from goodsinfo g,typeinfo t 
+		where g.tno=t.tno and gno=#{_parameter}
+	</select>
 </mapper>

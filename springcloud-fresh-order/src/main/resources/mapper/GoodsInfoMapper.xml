@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 注意：namespace中的值必须是对应接口的全路径，SQL语句中的id值必须是这个接口中对应方法名称 -->
+<mapper namespace="com.yjj.fresh.mapper.IGoodsInfoMapper">
+	
+	<select id="find" resultType="GoodsInfo" parameterType="map">
+		select g.gno,gname,pics,unit,weight,price,tno,cno,num from goodsinfo g,cartinfo c where g.gno=c.gno and mno=#{mno}
+		<foreach collection="array" open=" and g.gno in(" separator="," item="item" close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="findOrder" resultType="GoodsInfo">
+		select gno,gname,pics,weight,unit,price from goodsinfo 
+		<foreach collection="array" open="where gno in(" close=")" separator="," item="item">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

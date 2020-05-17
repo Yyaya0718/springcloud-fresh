@@ -154,6 +154,7 @@
 					if(yc.data==2){
 						let temp=document.referrer;//获取来源路径
 						if(temp=="" || temp==undefined || temp.indexOf("regidter.html")){
+							alert("登陆成功");
 							location.href="/goods/index.html";
 						}else{
 							history.go(-1);

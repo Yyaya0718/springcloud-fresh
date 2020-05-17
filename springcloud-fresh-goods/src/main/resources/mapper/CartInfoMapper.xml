@@ -25,6 +25,6 @@
 	</delete>
 	
 	<update id="update" parameterType="CartInfo">
-		update cartinfo set num=#{num} where mno=#{mno} and gno=#{gno}
+		update cartinfo set num=#{num} where cno=#{cno}
 	</update>
 </mapper>

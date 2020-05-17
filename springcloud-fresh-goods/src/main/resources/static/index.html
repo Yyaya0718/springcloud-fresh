@@ -17,13 +17,13 @@
     	<div class="header">
     		<div class="welcome fl">欢迎来到天天生鲜</div>
     		<div class="fr">
-            	<div class="login_info fl">
-                	<span v-if="nickName !='' ">欢迎：<em>{{ nickName }}</em></span>
+            	<div class="login_info fl" v-if="nickName !='' ">
+                	欢迎：<em id="name">{{ nickName }}</em>
                 </div>
                 <div class="login_btn fl" >
-                	<a href="login.html" v-if=" nickName=='' ">登录</a>
+                	<a href="/user/login.html" v-if=" nickName=='' ">登录</a>
                     <span> | </span>
-                    <a href="register.html">注册</a>
+                    <a href="/user/register.html">注册</a>
                 </div>
             	 <div class="user_link fl">
                     <span> | </span>
@@ -46,8 +46,8 @@
                     <input type="submit" class="input_btn fr"  value="搜索">
                 </form>
             </div>
-     		<div class="guest_cart fr">
-            	<a href="cart.html" class="cart_name fl">我的购物车</a>
+     		<div class="guest_cart fr" >
+            	<a href="javascript:void(0);" @click="checkCart()" class="cart_name fl">我的购物车</a>
                 <div class="goods_count fl" id="show_count">{{ cartNum }}</div>
             </div>
      </div>
@@ -138,6 +138,7 @@
 	<script src="js/axios.js"></script>
     <script src="js/vue.js"></script>
     <script src="js/check.js"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <script>
 		var let=new Vue({
 			el:"#goods_list",

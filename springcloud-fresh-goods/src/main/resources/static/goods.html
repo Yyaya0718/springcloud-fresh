@@ -20,9 +20,9 @@
                 	欢迎：<em id="name">{{ nickName }}</em>
                 </div>
                 <div class="login_btn fl">
-                	<a href="login.html" v-if="nickName==''">登录</a>
+                	<a href="/user/login.html" v-if="nickName==''">登录</a>
                     <span> | </span>
-                    <a href="register.html">注册</a>
+                    <a href="/user/register.html">注册</a>
                 </div>
             	 <div class="user_link fl">
                     <span> | </span>
@@ -192,7 +192,7 @@
 					})
 				},
 				addCart:function(gno){
-					if($("#name").html==''){
+					if($("#name").html()==undefined){
 						alert("请先登录...");
 						location.href="/user/login.html";
 					}

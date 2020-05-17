@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>天天生鲜-购物车</title>
+<link rel="shortcut icon" href="images/copylogo.png">
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/cart.css">
+</head>
+
+<body>
+	<!-- 头部 -->
+<div id="login">
+	<div class="header_con">
+    	<div class="header">
+    		<div class="welcome fl">欢迎来到天天生鲜</div>
+            <div class="fr">
+            	<div class="login_info fl" v-if="nickName!=''">
+                	欢迎：<em id="name">{{ nickName }}</em>
+                </div>
+                <div class="login_btn fl">
+                	<a href="/user/login.html" v-if="nickName==''">登录</a>
+                    <span> | </span>
+                    <a href="/user/register.html">注册</a>
+                </div>
+                <div class="user_link fl">
+                 	<span> | </span>
+                    <a href="user.html">用户中心</a>
+                    <span> | </span>
+                    <a href="cart.html">我的购物车</a>
+                    <span> | </span>
+                    <a href="order.html">我的订单</a>
+                </div>
+            </div>
+    	</div>
+    </div>
+
+
+	<!-- 搜索框-->
+	<div class="search_bar clearfix">
+    	<a href="index.html" class="logo fl"><img src="images/logo.png"></a>
+    	<div class="search_con fl">
+        	<form>
+            	<input type="text" placeholder="搜索商品" class="input_text fl" name="key_words">
+                <input type="button" value="搜索" class="input_btn fr">
+            </form>
+        </div>
+    	<div class="guest_cart fr" >
+            <a href="javascript:void(0);" @click="checkCart()" class="cart_name fl">我的购物车</a>
+            <div class="goods_count fl" id="show_count">{{ cartNum }}</div>
+        </div>
+    </div>
+</div>
+<div id="app">    
+    <!-- 购物车 -->
+    <div class="cart_con">
+    	<h2 class="total_count">全部商品<em>{{ totalCount }}</em>件</h2>
+    	<div class="cart_list_th clearfix">
+        	<ul>
+            	<li class="col01">商品名称</li>
+            	<li class="col02">商品单位</li>
+                <li class="col03">商品价格(元)</li>
+                <li class="col04">数量</li>
+                <li class="col05">小计</li>
+                <li class="col06">操作</li>
+            </ul>
+        </div>
+    	<div class="cart_list_td clearfix">
+       		<ul v-for="(item,index) in carts" :id=`g_${index}`>
+        		<li class="col01"><input type="checkbox" checked :index="index"></li>
+            	<li class="col02"><img :src="item.pics"></li>
+                <li class="col03">{{ item.gname }}<br><em>{{ item.price }}元/{{ item.unit }}</em></li>
+                <li class="col04">{{ item.weight }}g</li>
+                <li class="col05">{{ item.price }}</li>
+                <li class="col06">
+                	<div class="num_add">
+                    	<a href="javascript:void(0)" @click="changeNum(index,-1)" class="minus fl">-</a>
+                        <input type="text" :value="nums[index]" class="num_show fl">
+                        <a href="javascript:void(0)" @click="changeNum(index,1)" class="add fl">+</a>
+                    </div>
+                </li>
+                <li class="col07">{{ item.price*nums[index] }}</li>
+                <li class="col08"><a href="javascript:;" @click="delGoods(index,item.cno)">删除</a></li>
+            </ul>
+        </div>
+    	<div class="setElements">
+        	<ul>
+            	<li class="col01"><input type="checkbox" checked id="all"></li>
+            	<li class="col02"><label for="all">全选</label></li>
+                <li class="col03">合计(不含运费)：<span>￥</span><em id="totalPrices">{{ totalPrice }}</em><br>共计<b id="totalNumbers">{{ totalCount }}</b>件商品</li>
+                <li class="col04"><a href="">去结算</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    <!-- 版权所有 -->
+	<div class="footer">
+    	<div class="foot_link">
+    		<a href="#">关于我们</a> <span> | </span>
+            <a href="#">联系我么</a> <span> | </span>
+            <a href="#">招聘人才</a> <span> | </span>
+            <a href="#">友情链接</a> 
+    	</div>
+    	<p>CcpyRight &copy; 2019 衡阳市源辰信息科技有限公司 All Rights Reserverd</p>
+        <p>电话：0734-8355998 湘ICP备16015987号</p>
+    </div>
+    <script src="js/vue.js"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/qs.js"></script>
+    <script src="js/check.js"></script>
+    <script type="text/javascript">
+    	let vm=new Vue({
+    		el:"#app",
+    		data:{
+    			carts:[],
+    			totalCount:0,	//总数量
+    			totalPrice:0,	//总价
+    			nums:[],	//每个商品的数量
+    			prices:[],	//每个商品的单价
+    			status:[]	//该商品是否勾选
+    		},
+    		methods:{
+    			changeNum:function(index,count){//修改数量
+    				count =parseInt(count);
+    				var num=0;
+    				if(this.nums[index]+count<1){
+    					num=1;
+    				}else{
+    					num=this.nums[index]+count;
+    				}
+    				axios.post("cart/update",qs.stringify({num:num,cno:this.carts[index].cno})).then(yc=>{
+    					if(yc.data>0){
+    						alert("修改成功");
+    						this.$set(this.nums,index,num);
+    						this.getTotal();
+    					}else{
+    						alert("修改失败");
+    					}
+    				})
+    			},
+    			delGoods:function(index,cno){//删除商品
+    				if(!confirm("您确认要删除吗?")){
+    					return;
+    				}
+    				axios.post("cart/del",qs.stringify({cno:cno})).then(yc=>{
+    					if(yc.data>0){
+    						alert("删除成功");
+    						this.$set(this.nums,index,0);
+    						this.getTotal();
+    						$("#g_"+index).remove();
+    					}else{
+    						alert("删除失败");
+    					}
+    				})
+    			},
+    			getTotal:function(){//计算数量
+    				this.totalCount=0;
+					this.totalPrice=0;
+					this.nums.forEach((item,index)=>{
+						if(this.status[index]==1){
+							this.totalCount+=item;
+	    					this.totalPrice+=item*this.prices[index];
+						}
+					})
+    			},
+    			checkInfo:function(index,status){
+    				this.$set(this.status, index , status);
+    				this.getTotal();
+    			}
+    			
+    		},
+    		mounted:function(){
+    			
+    			axios.all( [ findCart() ] ).then(axios.spread( (yc)=>{
+    				this.carts=yc.data;
+    				
+    				yc.data.forEach((item,index)=>{
+    					this.nums.push(item.num);
+    					this.prices.push(item.price);
+    					this.status.push(1);
+    					this.totalCount+=item.num;
+    					this.totalPrice+=item.num*item.price;
+    				})
+    				
+    				this.$nextTick(function(){
+    					bindEvent();//页面渲染之后执行的操作
+    				})
+    				
+    			} ))
+    			
+    			window.updateCheck=this.checkInfo;//将这个vue对象加到window，下面就可以使用
+    			window.all=this.selectAll;
+    		}
+    	})
+    	
+    	//查询所有购物车的信息
+    	function findCart(){
+    		return axios({
+    			url:"cart/finds",
+    			method:"post",
+    			param:{}
+    		});
+    	}
+    	
+    	function bindEvent(){
+    		var checkboxs=$(".cart_list_td ul input[type='checkbox']");
+    		var length=checkboxs.length;
+    		
+    		$("#all").click(function(){
+    			var flag=$(this).prop("checked");
+    			var count=0;
+    			if(!flag){
+    				count=0;
+    			}else{
+    				count=1;
+    			}
+    			for(var i=0;i<length;i++){
+					updateCheck( i ,count );
+				}
+    			$(".cart_list_td ul .col01 input").prop("checked",flag);
+    		})
+    		
+    		for(var i=0;i<length;i++){
+    			//给每个复选框都添加点击事件
+    			checkboxs[i].onclick=function(){
+    				
+    				if(this.checked==true){
+    					updateCheck( $(this).attr("index") , 1 );
+    				}else{
+    					updateCheck( $(this).attr("index") , 0 );
+    				}
+    				
+    				//每次点击事件出发之后，修改全选按钮的状态
+    				var len=0;
+    				for(var j=0;j<length;j++){
+    					if(!checkboxs[j].checked){
+    						$("#all").prop("checked",false);
+    					}else{
+    						len++;
+    					}
+    				}
+    				if(len==length){
+    					$("#all").prop("checked",true);
+    				}
+    			}
+    		}
+    	}
+    </script>
+</body>
+</html>

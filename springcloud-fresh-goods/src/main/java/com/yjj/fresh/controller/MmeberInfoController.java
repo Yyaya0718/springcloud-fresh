@@ -20,10 +20,12 @@ public class MmeberInfoController {
 		Map<String,Object> map=new HashMap<String,Object>();
 		
 		MemberInfo member=(MemberInfo) session.getAttribute("LoginUser");
-		
-		map.put("nickName",member.getNickName());
-		map.put("cartNum",Integer.parseInt(session.getAttribute("cartNum").toString()));
-		
-		return map;
+		if(member==null) {
+			return null;
+		}else {
+			map.put("nickName",member.getNickName());
+			map.put("cartNum",Integer.parseInt(session.getAttribute("cartNum").toString()));
+			return map;
+		}
 	}
 }

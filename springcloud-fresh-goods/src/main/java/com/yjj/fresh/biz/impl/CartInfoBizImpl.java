@@ -53,7 +53,7 @@ public class CartInfoBizImpl implements ICartInfoBiz{
 
 	@Override
 	public int update(CartInfo cart) {
-		if(StringUtil.checkNull(cart.getGno(),cart.getMno(),cart.getNum())){
+		if(StringUtil.checkNull(cart.getMno(),cart.getCno())){
 			return -3;
 		}
 		return cartInfoMapper.update(cart);

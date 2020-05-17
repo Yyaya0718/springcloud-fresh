@@ -44,7 +44,7 @@ public class CartInfoController {
 	
 	@RequestMapping("/finds")
 	public List<GoodsInfo> findAll(HttpSession session){
-		MemberInfo member=(MemberInfo) session.getAttribute("loginUser");
+		MemberInfo member=(MemberInfo) session.getAttribute("LoginUser");
 		int mno=member.getMno();
 		return cartInfoBiz.finds(mno);
 	}
@@ -57,7 +57,7 @@ public class CartInfoController {
 	@RequestMapping("/update")
 	public int uodateNum(CartInfo cart,HttpSession session){
 		int result =-1;
-		MemberInfo member=(MemberInfo) session.getAttribute("loginUser");
+		MemberInfo member=(MemberInfo) session.getAttribute("LoginUser");
 		if(member==null){
 			result=-2;
 		}else{

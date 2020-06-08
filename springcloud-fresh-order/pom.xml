@@ -18,6 +18,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<dependencies>
+		<!-- 支付宝接口 -->
+		<dependency>
+			<groupId>com.alipay.sdk</groupId>
+			<artifactId>alipay-sdk-java</artifactId>
+			<version>3.7.26.ALL</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<finalName>springcloud-fresh-order</finalName>
 		<plugins>

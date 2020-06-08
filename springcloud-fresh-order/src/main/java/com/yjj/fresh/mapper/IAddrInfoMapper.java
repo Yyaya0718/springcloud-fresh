@@ -1,6 +1,7 @@
 package com.yjj.fresh.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.yjj.fresh.enity.AddrInfo;
 
@@ -24,5 +25,5 @@ public interface IAddrInfoMapper {
 	 * @param ano
 	 * @return
 	 */
-	public int setDefault(String ano);
+	public int setDefault(Map<String,Object> map);
 }

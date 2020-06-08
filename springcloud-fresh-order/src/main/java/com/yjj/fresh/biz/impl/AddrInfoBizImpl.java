@@ -1,5 +1,7 @@
 package com.yjj.fresh.biz.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +25,11 @@ public class AddrInfoBizImpl implements IAddrInfoBiz{
 	}
 
 	@Override
-	public int setDefault(String ano) {
-		if(StringUtil.checkNull(ano)){
+	public int setDefault(Map<String,Object> map) {
+		if(StringUtil.checkNull(map.get("ano"),map.get("mno"))){
 			return -2;
 		}
-		return addrInfoMapper.setDefault(ano);
+		return addrInfoMapper.setDefault(map);
 	}
 
 	

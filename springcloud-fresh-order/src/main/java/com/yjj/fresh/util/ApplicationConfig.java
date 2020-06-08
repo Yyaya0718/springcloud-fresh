@@ -21,7 +21,7 @@ public class ApplicationConfig {
 		 * 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数
 		 * 通知页面一般用来，支付成功后，需要跳转什么页面之类的处理
 		 */
-	    public static String return_url = "http://localhost:8080/project/apli/return";
+	    public static String return_url = "http://127.0.0.1:9999/order/apli/return";
 	    
 		// 签名方式，注意这里，如果步骤设置的是RSA则用RSA
 		public static String sign_type = "RSA2";

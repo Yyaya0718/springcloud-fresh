@@ -1,5 +1,8 @@
 package com.yjj.fresh.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ public class AddrInfoController {
 	
 	@RequestMapping("/add")
 	public int addAddr(HttpSession session,AddrInfo addr){
-		MemberInfo member=(MemberInfo) session.getAttribute("loginUser");
+		MemberInfo member=(MemberInfo) session.getAttribute("LoginUser");
 		if(member==null){
 			return -3;
 		}
@@ -29,7 +32,10 @@ public class AddrInfoController {
 	}
 	
 	@RequestMapping("/defalut")
-	public int setDefalutAddr(String ano){
-		return addrInfoBiz.setDefault(ano);
+	public int setDefalutAddr(String ano,HttpSession session){
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("ano", ano);
+		map.put("mno",((MemberInfo) session.getAttribute("LoginUser")).getMno());
+		return addrInfoBiz.setDefault(map);
 	}
 }

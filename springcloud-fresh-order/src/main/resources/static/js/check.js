@@ -16,12 +16,14 @@ let check_info=new Vue({
 	},
 	mounted:function(){
 		axios.get("/goods/member/checkinfo",{param:{}}).then(yc=>{
-			if(yc.data!=null && yc.data!=''){
-				this.nickName=yc.data.nickName;
-				this.cartNum=yc.data.cartNum;
-			}else{
+			if(yc.data.nickName==null || yc.data.nickName==''){
 				this.nickName='';
 				this.cartNum=0;
+				alert("请先登录...");
+				location.href="/user/login.html";
+			}else{
+				this.nickName=yc.data.nickName;
+				this.cartNum=yc.data.cartNum;
 			}
 		})
 	}

@@ -56,8 +56,12 @@
 		<input type="hidden" id="receive_addr" />
 		<dl id="addr_list">
 			<dt>寄送到：</dt>
-			<dd><span>邮寄到 </span>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 159****0775 </dd>
-			<dd class="selectedAddr"><span>邮寄到 </span>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 159****0775</dd>
+			<dd v-for="addr in addrs" v-if="addr.flag==0" :id="addr.ano">
+				<span>邮寄到 </span>{{ addr.province }} {{ addr.city }} {{ addr.area }} {{ addr.addr }}（{{ addr.name }} 收） {{ addr.tel }} 
+			</dd>
+			<dd class="selectedAddr" v-for="addr in addrs" v-if="addr.flag==1" :id="addr.ano">
+				<span>邮寄到 </span>{{ addr.province }} {{ addr.city }} {{ addr.area }} {{ addr.addr }}（{{ addr.name }} 收） {{ addr.tel }}
+			</dd>
 		</dl>
 		<a href="javascript:showAddrDiv()" class="edit_site">编辑收货地址</a>
 	</div>
@@ -121,38 +125,34 @@
 			<li class="col05">小计</li>		
 		</ul>
 		
-		<ul class="goods_list_td clearfix">
-			<li class="col01">1</li>			
-			<li class="col02"><img src="images/goods/goods012.jpg"></li>
-			<li class="col03">奇异果</li>
-			<li class="col04">500g</li>
-			<li class="col05">25.80元</li>
-			<li class="col06">1</li>
-			<li class="col07">25.80元</li>	
+		<ul class="goods_list_td clearfix" v-for="good in goods">
+			<li class="col01" :id="good.cno" name="cart_cno">{{ good.gno }}</li>			
+			<li class="col02"><img :src="good.pics"></li>
+			<li class="col03">{{ good.gname }}</li>
+			<li class="col04">{{ good.weight }}{{ good.unit }}</li>
+			<li class="col05">{{ good.price }}&yen;</li>
+			<li class="col06">{{ good.num }}</li>
+			<li class="col07" :id="good.tno">{{ good.num*good.price  }}&yen;</li>	
 		</ul>
-		<ul class="goods_list_td clearfix">
-			<li class="col01">2</li>			
-			<li class="col02"><img src="images/goods/goods003.jpg"></li>
-			<li class="col03">大兴大棚草莓</li>
-			<li class="col04">500g</li>
-			<li class="col05">16.80元</li>
-			<li class="col06">1</li>
-			<li class="col07">16.80元</li>	
-		</ul>
-
 	</div>
      
     <!-- 金额结算 -->	
     <h3 class="common_title">总金额结算</h3>
 	<div class="common_list_con clearfix">
 		<div class="settle_con">
-			<div class="total_goods_count">共<em id="total_count"></em>件商品，总金额<b id="total_price"></b></div>
-			<div class="transit">运费：<b>10元</b></div>
-			<div class="total_pay">实付款：<b id="real_price"></b></div>
+			<div class="total_goods_count">共<em id="total_count">{{ totalNum }}</em>件商品，总金额<b id="total_price">{{ totalPrice }}</b></div>
+			<div class="transit">
+				运费：<b v-if="totalPrice>=100">0元</b>
+				<b v-if="totalPrice<100">10元</b>
+			</div>
+			<div class="total_pay">
+				实付款：<b id="real_price" v-if="totalPrice>=100">{{ totalPrice }}</b>
+				<b id="real_price" v-if="totalPrice<100">{{ totalPrice+10 }}</b>
+			</div>
 		</div>
 	</div>
 	<div class="order_submit clearfix">
-		<a href="javascript:;" id="order_btn">提交订单</a>
+		<a href="javascript:orderPay()" id="order_btn" >提交订单</a>
 	</div>	
     
     <div class="popup_con">
@@ -181,11 +181,14 @@
 <script src="js/qs.js"></script>
 <script type="text/javascript" src="js/check.js"></script>
 <script type="text/javascript">
-let app=new Vue({
+var app;
+app=new Vue({
 	el:"#app",
 	data:{
 		addrs:[],
-		goods:[]
+		goods:[],
+		totalPrice:0,
+		totalNum:0
 	},
 	methods:{
 		
@@ -193,14 +196,218 @@ let app=new Vue({
 	mounted:function(){
 		axios.all( [ finds() ] ).then( axios.spread( ( yc )=>{
 			
+			this.addrs=yc.data.addrInfo;
+			this.goods=yc.data.goodsInfo;
+			
+			yc.data.goodsInfo.forEach((item,index)=>{
+				this.totalPrice+=item.num*item.price;
+				this.totalNum+=item.num;
+			})
+			
 		} ) )
+		
+	},
+	updated:function(){
+		this.$nextTick(function(){
+			bindEven();
+		})
 	}
 })
 function finds(){
 	var gnos=location.hash.replace("#","");
 	
-	axios({ url:"order/finds", method:"post" , params:{ gnos:gnos } });
+	return axios({ url:"order/finds", method:"post" , params:{ gnos:gnos } });
 }
+
+
+//设置为默认的收货地址
+function bindEven(){
+	$("#addr_list dd").unbind();
+	$("#addr_list dd").click(function(){
+		var ano=$(this).attr("id");
+		$("#addr_list dd").removeClass("selectedAddr");
+		$(this).addClass("selectedAddr");
+		//将这个设置成默认地址
+		$.post("addr/defalut",{ano:ano},function(data){
+			data=parseInt($.trim(data));
+			if(data==-2){
+				alert("说明ano为空");
+			}else if(data>0){
+			}
+		},"text")
+		
+	})
+}
+
+
+//添加收货地址按钮
+function addAddr() {
+	$("#add_addr").attr("disabled","true");
+	var name=$("#addr_name").val();
+	var tel=$("#addr_tel").val();
+	var province=$("#province option:selected").html();
+	var city=$("#city option:selected").html();
+	var area=$("#area option:selected").html();
+	var addr=$("#addr_addr").val();
+	
+	//console.log(name,tel,province,city,area,addr);
+	if(name=='' || tel=='' || province=='' || city=='' || area=='' || addr==''){
+		alert("您填写的信息有为空的");
+		return;
+	}
+	
+	$.post("addr/add",{name:name,tel:tel,province:province,city:city,area:area,addr:addr},function(data){
+		data=parseInt($.trim(data));
+		if(data==-2){
+			alert("后台接受到的数据有为空的");
+		}else if(data==-3){
+			alert("说明mno为空");
+		}else if(data>0){
+			alert("添加成功");
+			location.reload();
+			/*
+				app.$data.addrs.push(obj);
+			*/
+		}else{
+			alert("添加失败");
+		}
+	})
+	
+}
+
+//提交订单按钮
+function orderPay(){
+	var cno=[];
+	$(".col01[name='cart_cno']").each(function(index,item){
+		cno[cno.length]=$(this).attr("id");
+	})
+	var gno=[];
+	var num=[];
+	var price=[];
+	$(".goods_list_td .col01").each(function(index,item){
+		var obj=$(this).parent().find(".col07");
+		gno[gno.length]=$(this).html();
+		num[num.length]=$(this).parent().find(".col06").html();
+		price[price.length]=obj.text().replace("¥","")+"-"+obj.attr("id");
+	})
+	
+	var totalPrice=$("#real_price").html();
+	var ano=$(".selectedAddr").attr("id");
+	
+	$.post("order/pay",{
+		cno:cno.join("-"),
+		gno:gno.join(","),
+		num:num.join(","),
+		price:price.join(","),
+		totalPrice:totalPrice,
+		ano:ano
+		},function(data){
+			data=parseInt($.trim(data));
+			if(data==-2){
+				alert("说明后台取值有为空的");
+			}else if(data>0){
+				$('.popup_con').fadeIn('fast', function() {
+					setTimeout(function(){
+						$('.popup_con').fadeOut('fast',function(){
+							window.location.href = 'order.html';
+						});	
+					},3000)
+				});
+			}else{
+				alert("订单提交失败");
+			}
+		},"text")
+}
+
+
+//编辑收货地址弹框
+function showAddrDiv() {
+	$("#myform")[0].reset();
+	$("#addr_div").css("display", "block");
+}
+
+//收货地址按钮的关闭
+function hiddenDiv(){
+	$("#addr_div").css("display", "none");
+}
+var docXml;	//获取到的xml文件信息
+var code=0;	//省的编码
+var cityCode=0;	//城市的编码
+$(function(){
+	//发get请求得到areas.xml 这里的地址是你放areas.xml的地址
+	$.get("xml/areas.xml",function(xml){
+		docXml=xml;
+		
+		//获取所有的省份节点
+		var provinceNodes=$(docXml).find("province");
+		
+		var provinceStr='<option value="0">--请选择省份--</option>';
+		
+		//开始循环所有节点 取出省份的值
+		$.each(provinceNodes,function(index,item){
+			
+			//获取当前这个省份的name属性的值，即省份的名称
+			province=$(item).attr("name");
+			
+			//获取这个省份的编码值，只取前三位，因为这个省有哪些市，这些市的编码前三位和省的前三位相同
+			code=$(item).attr("code").substring(0,3);	
+			provinceStr+='<option value="'+ code +'">'+ province +'</option>';
+			
+		})
+		$("#province").html(provinceStr);
+	})
+})
+
+//当省份一旦发生改变的时候，就去修改市的
+$("#province").on("change",function(){
+	
+	//首先取出你选择的省份是哪一个   获取到的是省份编号的前三位110,130
+	var provinceCode=$("#province option:selected").val();
+	
+	//获取所有的城市节点
+	var cityNodes=$(docXml).find("city");
+	
+	var cityStr='<option value="0">--请选择城市--</option>';
+	
+	//循环所有的城市节点   ，根据code去找对应城市
+	$(cityNodes).each(function(index,item){
+		cityCode=$(item).attr("code");
+		//取出code存到value里面
+		code=$(item).attr("code").substring(0,4);
+		
+		//首先取出当前这个节点的code看是否是以provinceCode开头
+		if(cityCode.startsWith(provinceCode)){
+			cityStr+="<option value='"+ code +"'>"+ $(item).attr("name") +"</option>";
+		}
+	})
+	$("#city").html(cityStr);
+	
+})
+
+//当城市一旦发生改变的时候，就去修改区的
+$("#city").on("change",function(){
+	//首先取出你选择的城市是哪一个   获取到的是城市编号的前4位1101,1102
+	cityCode=$("#city option:selected").val();
+	
+	//获取所有的区节点
+	var areaNodes=$(docXml).find("area");
+	
+	var areaCode=0;
+	var areaStr='<option value="0">--请选择城市--</option>';
+	
+	//循环所有的area节点   ，根据code去找对应区
+	$(areaNodes).each(function(index,item){
+		//首先取出当前这个节点的code看是否是以cityCode开头
+		areaCode=$(item).attr("code");
+		//取出code存到value里面
+		//code=$(item).attr("code").substring(0,4);
+		if(areaCode.startsWith(cityCode)){
+			areaStr+="<option value='0'>"+ $(item).attr("name") +"</option>";
+		}
+	})
+	$("#area").html(areaStr);
+	
+})
 </script>
 </body>
 </html>

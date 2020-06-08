@@ -13,7 +13,7 @@
 		insert into addrinfo values(0,#{mno},#{name},#{tel},#{province},#{city},#{area},#{addr},0,1)
 	</insert>
 	
-	<update id="setDefault" parameterType="string">
-		update addrinfo a1,addrinfo a2 set a1.flag=1 , a2.flag=0 where a1.ano=#{_parameter} and a2.ano not in(#{_parameter})
+	<update id="setDefault" parameterType="map">
+		update addrinfo a1,addrinfo a2 set a1.flag=1 , a2.flag=0 where a1.ano=#{ano} and a2.ano not in(#{ano}) and a1.mno=#{mno}
 	</update>
 </mapper>

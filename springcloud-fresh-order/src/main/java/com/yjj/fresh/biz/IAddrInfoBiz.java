@@ -1,5 +1,7 @@
 package com.yjj.fresh.biz;
 
+import java.util.Map;
+
 import com.yjj.fresh.enity.AddrInfo;
 
 public interface IAddrInfoBiz {
@@ -16,5 +18,5 @@ public interface IAddrInfoBiz {
 	 * @param ano
 	 * @return
 	 */
-	public int setDefault(String ano);
+	public int setDefault(Map<String,Object> map);
 }
